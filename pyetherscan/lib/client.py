@@ -1,7 +1,7 @@
 import requests
 
 from retrying import retry
-from util import settings
+from pyetherscan.util import settings
 from . import errors, response
 
 

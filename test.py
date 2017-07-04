@@ -13,7 +13,7 @@ class TestAccountEndpoint(unittest.TestCase):
         address = '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'
         result = self.client.get_single_balance(address)
 
-        self.assertIsInstance(response.SingleAddressBalanceResponse, result)
+        self.assertEqual(response.SingleAddressBalanceResponse, type(result))
         self.assertEqual(expected_response, result.etherscan_response)
         self.assertEqual(200, result.response_status_code)
         self.assertEqual('1', result.status)
