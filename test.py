@@ -1,6 +1,6 @@
 import unittest
 
-from lib import client, response
+from pyetherscan.lib import client, response
 
 
 class TestAccountEndpoint(unittest.TestCase):
