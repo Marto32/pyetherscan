@@ -19,3 +19,7 @@ class TestAccountEndpoint(unittest.TestCase):
         self.assertEqual('1', result.status)
         self.assertEqual('OK', result.message)
         self.assertEqual(748997604382925139479303, result.balance)
+
+
+if __name__ == '__main__':
+    unittest.main()
