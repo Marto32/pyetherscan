@@ -199,3 +199,50 @@ class BlocksMinedByAddressResponse(EtherscanResponse):
         self.status = self.etherscan_response.get('status')
         self.message = self.etherscan_response.get('message')
         self.blocks = self.etherscan_response.get('result')
+
+
+class ContractABIByAddressResponse(EtherscanResponse):
+
+    def _parse_response(self):
+        """
+        Parses a contract abi by address request response. Example API
+        response output:
+        ```
+        {
+            "status":"1",
+            "message":"OK",
+            "result":[
+                {
+                    'constant': True,
+                    'inputs': [
+                        {
+                            'name': '',
+                            'type': 'uint256'
+                        }
+                    ],
+                    'name': 'proposals',
+                    'outputs': [
+                        {'name': 'recipient', 'type': 'address'},
+                        {'name': 'amount', 'type': 'uint256'},
+                        {'name': 'description', 'type': 'string'},
+                        {'name': 'votingDeadline', 'type': 'uint256'},
+                        {'name': 'open', 'type': 'bool'},
+                        {'name': 'proposalPassed', 'type': 'bool'},
+                        {'name': 'proposalHash', 'type': 'bytes32'},
+                        {'name': 'proposalDeposit', 'type': 'uint256'},
+                        {'name': 'newCurator', 'type': 'bool'},
+                        {'name': 'yea', 'type': 'uint256'},
+                        {'name': 'nay', 'type': 'uint256'},
+                        {'name': 'creator', 'type': 'address'}
+                    ],
+                    'type': 'function'
+                }, {
+                    ...
+                }
+            ]
+        }
+        ```
+        """
+        self.status = self.etherscan_response.get('status')
+        self.message = self.etherscan_response.get('message')
+        self.contract_abi = self.etherscan_response.get('result')

@@ -79,7 +79,9 @@ class Client(object):
         resp = requests.post(**payload)
         return response_object(resp)
 
-    # Address API methods
+    #######################
+    # Address API methods #
+    #######################
     def get_single_balance(self, address):
         """
         Obtains the balance for a single address.
@@ -237,4 +239,26 @@ class Client(object):
         return self.get_request(
             url=request_url,
             response_object=response.BlocksMinedByAddressResponse
+        )
+
+    ########################
+    # Contract API methods #
+    ########################
+    def get_contract_abi(self, address):
+        """
+        Retrieves contract abi data by address
+        """
+        module_uri = self._module.format(module=self.contract_module)
+        action_uri = self._action.format(action='getabi')
+        address_uri = self._address.format(address=address)
+
+        request_url = self._base_url + \
+            module_uri + \
+            action_uri + \
+            address_uri + \
+            self.key_uri
+
+        return self.get_request(
+            url=request_url,
+            response_object=response.ContractABIByAddressResponse
         )
