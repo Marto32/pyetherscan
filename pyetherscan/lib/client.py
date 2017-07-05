@@ -117,9 +117,9 @@ class Client(object):
                 'Etherscan takes a maximum of 20 addresses in a single call.'
             )
 
-        _addresses = ','.join(address)
+        _addresses = ','.join(addresses)
         module_uri = self._module.format(module=self.account_module)
-        action_uri = self._action.format(action='balance')
+        action_uri = self._action.format(action='balancemulti')
         address_uri = self._address.format(address=_addresses)
         tag_uri = self._tag.format(tag='latest')
 
@@ -139,7 +139,7 @@ class Client(object):
         endblock=None, sort='asc', offset=None, page=None):
         """
         """
-        module_uri = self._module.format(module=self.transaction_module)
+        module_uri = self._module.format(module=self.account_module)
         action_uri = self._action.format(action='txlist')
         address_uri = self._address.format(address=address)
 
@@ -185,7 +185,7 @@ class Client(object):
             response_object=response.TransactionsByAddressResponse
         )
 
-    def get_transactions_by_hash(self, hash, startblock=None,
+    def get_transaction_by_hash(self, hash, startblock=None,
         endblock=None, sort='asc', offset=None, page=None):
         """
         """

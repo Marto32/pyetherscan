@@ -34,14 +34,9 @@ class EtherscanResponse(object):
         raise NotImplementedError
 
     def __repr__(self):
-        attribute_list = [
-            '{k}={v}'.format(k=_key, v=_val) for _key, _val in self.__dict__.items()
-        ]
-
-        return '{_class}(resp={resp}) -> Attributes:\n{attrs}'.format(
+        return '{_class}(resp={resp})'.format(
             _class=self.__class__.__name__,
-            resp=self.response_object,
-            attrs='\n'.join(attribute_list)
+            resp=self.response_object
         )
 
 
@@ -94,7 +89,7 @@ class MultiAddressBalanceResponse(EtherscanResponse):
 
         address_balance_mapping_list = self.etherscan_response.get('result')
         self.balances = {
-            mapping.get('account'): mapping.get('balance')
+            mapping.get('account'): float(mapping.get('balance'))
             for mapping in address_balance_mapping_list
         }
 
