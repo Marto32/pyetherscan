@@ -24,6 +24,8 @@ class EtherscanResponse(object):
         else:
             self.response_object = resp
             self.response_status_code = self.response_object.status_code
+            self.status = self.etherscan_response.get('status')
+            self.message = self.etherscan_response.get('message')
             self._parse_response()
 
     def _parse_response(self):
@@ -54,8 +56,6 @@ class SingleAddressBalanceResponse(EtherscanResponse):
             }
             ```
         """
-        self.status = self.etherscan_response.get('status')
-        self.message = self.etherscan_response.get('message')
         self.balance = int(self.etherscan_response.get('result'))
 
 
@@ -84,8 +84,6 @@ class MultiAddressBalanceResponse(EtherscanResponse):
             }
             ```
         """
-        self.status = self.etherscan_response.get('status')
-        self.message = self.etherscan_response.get('message')
 
         address_balance_mapping_list = self.etherscan_response.get('result')
         self.balances = {
@@ -130,8 +128,6 @@ class TransactionsByAddressResponse(EtherscanResponse):
             }
             ```
         """
-        self.status = self.etherscan_response.get('status')
-        self.message = self.etherscan_response.get('message')
         self.transactions = self.etherscan_response.get('result')
 
 
@@ -164,8 +160,6 @@ class TransactionsByHashResponse(EtherscanResponse):
             }
             ```
         """
-        self.status = self.etherscan_response.get('status')
-        self.message = self.etherscan_response.get('message')
         self.transaction = self.etherscan_response.get('result')[0]
 
 
@@ -191,8 +185,6 @@ class BlocksMinedByAddressResponse(EtherscanResponse):
             }
             ```
         """
-        self.status = self.etherscan_response.get('status')
-        self.message = self.etherscan_response.get('message')
         self.blocks = self.etherscan_response.get('result')
 
 
@@ -202,42 +194,60 @@ class ContractABIByAddressResponse(EtherscanResponse):
         """
         Parses a contract abi by address request response. Example API
         response output:
-        ```
-        {
-            "status":"1",
-            "message":"OK",
-            "result":[
-                {
-                    'constant': True,
-                    'inputs': [
-                        {
-                            'name': '',
-                            'type': 'uint256'
-                        }
-                    ],
-                    'name': 'proposals',
-                    'outputs': [
-                        {'name': 'recipient', 'type': 'address'},
-                        {'name': 'amount', 'type': 'uint256'},
-                        {'name': 'description', 'type': 'string'},
-                        {'name': 'votingDeadline', 'type': 'uint256'},
-                        {'name': 'open', 'type': 'bool'},
-                        {'name': 'proposalPassed', 'type': 'bool'},
-                        {'name': 'proposalHash', 'type': 'bytes32'},
-                        {'name': 'proposalDeposit', 'type': 'uint256'},
-                        {'name': 'newCurator', 'type': 'bool'},
-                        {'name': 'yea', 'type': 'uint256'},
-                        {'name': 'nay', 'type': 'uint256'},
-                        {'name': 'creator', 'type': 'address'}
-                    ],
-                    'type': 'function'
-                }, {
-                    ...
-                }
-            ]
-        }
-        ```
+            ```
+            {
+                "status":"1",
+                "message":"OK",
+                "result":[
+                    {
+                        'constant': True,
+                        'inputs': [
+                            {
+                                'name': '',
+                                'type': 'uint256'
+                            }
+                        ],
+                        'name': 'proposals',
+                        'outputs': [
+                            {'name': 'recipient', 'type': 'address'},
+                            {'name': 'amount', 'type': 'uint256'},
+                            {'name': 'description', 'type': 'string'},
+                            {'name': 'votingDeadline', 'type': 'uint256'},
+                            {'name': 'open', 'type': 'bool'},
+                            {'name': 'proposalPassed', 'type': 'bool'},
+                            {'name': 'proposalHash', 'type': 'bytes32'},
+                            {'name': 'proposalDeposit', 'type': 'uint256'},
+                            {'name': 'newCurator', 'type': 'bool'},
+                            {'name': 'yea', 'type': 'uint256'},
+                            {'name': 'nay', 'type': 'uint256'},
+                            {'name': 'creator', 'type': 'address'}
+                        ],
+                        'type': 'function'
+                    }, {
+                        ...
+                    }
+                ]
+            }
+            ```
         """
-        self.status = self.etherscan_response.get('status')
-        self.message = self.etherscan_response.get('message')
         self.contract_abi = self.etherscan_response.get('result')
+
+
+class ContractStatusResponse(EtherscanResponse):
+
+    def _parse_response(self):
+        """
+        Parses a transaction status by hash request response. Example API
+        response output:
+            ```
+            {
+                "status":"1",
+                "message":"OK",
+                "result":{
+                    "isError":"1",
+                    "errDescription":"Bad jump destination"
+                }
+            }
+            ```
+        """
+        self.contract_status = self.etherscan_response.get('result')
