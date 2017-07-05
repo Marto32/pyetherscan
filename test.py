@@ -89,5 +89,20 @@ class TestContractEndpoint(BaseClientTestCase):
         self.assertEqual('OK', result.message)
         self.assertEqual(contract_abi, result.contract_abi)
 
+
+class TestTransactionsEndpoint(BaseClientTestCase):
+
+    def test_get_contract_execution_status(self):
+        expected_response = {u'status': u'1', u'message': u'OK', u'result': {u'isError': u'1', u'errDescription': u'Bad jump destination'}}
+        hash = '0x15f8e5ea1079d9a0bb04a4c58ae5fe7654b5b2b4463375ff7ffb490aa0032f3a'
+        result = self.client.get_contract_execution_status(hash)
+
+        self.assertEqual(response.ContractStatusResponse, type(result))
+        self.assertEqual(expected_response, result.etherscan_response)
+        self.assertEqual(200, result.response_status_code)
+        self.assertEqual('1', result.status)
+        self.assertEqual('OK', result.message)
+
+
 if __name__ == '__main__':
     unittest.main()
