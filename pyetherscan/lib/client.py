@@ -185,18 +185,18 @@ class Client(object):
             response_object=response.TransactionsByAddressResponse
         )
 
-    def get_transaction_by_hash(self, hash, startblock=None,
+    def get_transaction_by_hash(self, transaction_hash, startblock=None,
         endblock=None, sort='asc', offset=None, page=None):
         """
         """
         module_uri = self._module.format(module=self.account_module)
         action_uri = self._action.format(action='txlistinternal')
-        hash_uri = self._hash.format(hash=hash)
+        transaction_hash_uri = self._hash.format(hash=transaction_hash)
 
         request_url = self._base_url + \
             module_uri + \
             action_uri + \
-            hash_uri + \
+            transaction_hash_uri + \
             self.key_uri
 
         return self.get_request(
@@ -261,4 +261,27 @@ class Client(object):
         return self.get_request(
             url=request_url,
             response_object=response.ContractABIByAddressResponse
+        )
+
+    ############################
+    # Transactions API methods #
+    ############################
+    def get_contract_execution_status(self, transaction_hash):
+        """
+        Retrieves contract status data by tx hash. Obtains whether or not
+        there was an error during contract execution.
+        """
+        module_uri = self._module.format(module=self.transaction_module)
+        action_uri = self._action.format(action='getstatus')
+        transaction_hash_uri = self._hash.format(hash=transaction_hash)
+
+        request_url = self._base_url + \
+            module_uri + \
+            action_uri + \
+            transaction_hash_uri + \
+            self.key_uri
+
+        return self.get_request(
+            url=request_url,
+            response_object=response.ContractStatusResponse
         )
