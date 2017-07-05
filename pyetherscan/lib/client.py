@@ -79,7 +79,9 @@ class Client(object):
         resp = requests.post(**payload)
         return response_object(resp)
 
-    # Address API methods
+    #######################
+    # Address API methods #
+    #######################
     def get_single_balance(self, address):
         """
         Obtains the balance for a single address.
@@ -115,9 +117,9 @@ class Client(object):
                 'Etherscan takes a maximum of 20 addresses in a single call.'
             )
 
-        _addresses = ','.join(address)
+        _addresses = ','.join(addresses)
         module_uri = self._module.format(module=self.account_module)
-        action_uri = self._action.format(action='balance')
+        action_uri = self._action.format(action='balancemulti')
         address_uri = self._address.format(address=_addresses)
         tag_uri = self._tag.format(tag='latest')
 
@@ -137,7 +139,7 @@ class Client(object):
         endblock=None, sort='asc', offset=None, page=None):
         """
         """
-        module_uri = self._module.format(module=self.transaction_module)
+        module_uri = self._module.format(module=self.account_module)
         action_uri = self._action.format(action='txlist')
         address_uri = self._address.format(address=address)
 
@@ -183,7 +185,7 @@ class Client(object):
             response_object=response.TransactionsByAddressResponse
         )
 
-    def get_transactions_by_hash(self, hash, startblock=None,
+    def get_transaction_by_hash(self, hash, startblock=None,
         endblock=None, sort='asc', offset=None, page=None):
         """
         """
@@ -237,4 +239,26 @@ class Client(object):
         return self.get_request(
             url=request_url,
             response_object=response.BlocksMinedByAddressResponse
+        )
+
+    ########################
+    # Contract API methods #
+    ########################
+    def get_contract_abi(self, address):
+        """
+        Retrieves contract abi data by address
+        """
+        module_uri = self._module.format(module=self.contract_module)
+        action_uri = self._action.format(action='getabi')
+        address_uri = self._address.format(address=address)
+
+        request_url = self._base_url + \
+            module_uri + \
+            action_uri + \
+            address_uri + \
+            self.key_uri
+
+        return self.get_request(
+            url=request_url,
+            response_object=response.ContractABIByAddressResponse
         )

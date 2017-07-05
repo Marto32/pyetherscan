@@ -34,14 +34,9 @@ class EtherscanResponse(object):
         raise NotImplementedError
 
     def __repr__(self):
-        attribute_list = [
-            '{k}={v}'.format(k=_key, v=_val) for _key, _val in self.__dict__.items()
-        ]
-
-        return '{_class}(resp={resp}) -> Attributes:\n{attrs}'.format(
+        return '{_class}(resp={resp})'.format(
             _class=self.__class__.__name__,
-            resp=self.response_object,
-            attrs='\n'.join(attribute_list)
+            resp=self.response_object
         )
 
 
@@ -94,7 +89,7 @@ class MultiAddressBalanceResponse(EtherscanResponse):
 
         address_balance_mapping_list = self.etherscan_response.get('result')
         self.balances = {
-            mapping.get('account'): mapping.get('balance')
+            mapping.get('account'): float(mapping.get('balance'))
             for mapping in address_balance_mapping_list
         }
 
@@ -199,3 +194,50 @@ class BlocksMinedByAddressResponse(EtherscanResponse):
         self.status = self.etherscan_response.get('status')
         self.message = self.etherscan_response.get('message')
         self.blocks = self.etherscan_response.get('result')
+
+
+class ContractABIByAddressResponse(EtherscanResponse):
+
+    def _parse_response(self):
+        """
+        Parses a contract abi by address request response. Example API
+        response output:
+        ```
+        {
+            "status":"1",
+            "message":"OK",
+            "result":[
+                {
+                    'constant': True,
+                    'inputs': [
+                        {
+                            'name': '',
+                            'type': 'uint256'
+                        }
+                    ],
+                    'name': 'proposals',
+                    'outputs': [
+                        {'name': 'recipient', 'type': 'address'},
+                        {'name': 'amount', 'type': 'uint256'},
+                        {'name': 'description', 'type': 'string'},
+                        {'name': 'votingDeadline', 'type': 'uint256'},
+                        {'name': 'open', 'type': 'bool'},
+                        {'name': 'proposalPassed', 'type': 'bool'},
+                        {'name': 'proposalHash', 'type': 'bytes32'},
+                        {'name': 'proposalDeposit', 'type': 'uint256'},
+                        {'name': 'newCurator', 'type': 'bool'},
+                        {'name': 'yea', 'type': 'uint256'},
+                        {'name': 'nay', 'type': 'uint256'},
+                        {'name': 'creator', 'type': 'address'}
+                    ],
+                    'type': 'function'
+                }, {
+                    ...
+                }
+            ]
+        }
+        ```
+        """
+        self.status = self.etherscan_response.get('status')
+        self.message = self.etherscan_response.get('message')
+        self.contract_abi = self.etherscan_response.get('result')
