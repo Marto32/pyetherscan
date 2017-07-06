@@ -1,6 +1,8 @@
 """
 Library for connecting to the Etherscan API using a self contained client.
 
+See :doc:`/client` for an overview.
+
 Available objects:
  - ``Client``: An Etherscan API client
 """
