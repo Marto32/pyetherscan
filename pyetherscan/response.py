@@ -16,7 +16,7 @@ class EtherscanResponse(object):
         try:
             self.etherscan_response = json.loads(resp.text)
         except AttributeError:
-            raise EtherscanRequestError(
+            raise error.EtherscanRequestError(
                 'Invalid request: \n{request}'.format(
                     request=resp
                 )
@@ -50,6 +50,7 @@ class SingleAddressBalanceResponse(EtherscanResponse):
         response output:
 
             .. code-block:: python
+
                 {
                     "status":"1",
                     "message":"OK",
@@ -68,6 +69,7 @@ class MultiAddressBalanceResponse(EtherscanResponse):
         response output:
 
             .. code-block:: python
+
                 {
                     "status":"1",
                     "message":"OK",
@@ -100,35 +102,37 @@ class TransactionsByAddressResponse(EtherscanResponse):
         """
         Parses a transactions by address request response. Example API
         response output:
-            ```
-            {
-                "status":"1",
-                "message":"OK",
-                "result":[
-                    {
-                        "blockNumber":"54092",
-                        "timeStamp":"1439048640",
-                        "hash":"0x9c81f44c29ff0226f83...",
-                        "nonce":"0",
-                        "blockHash":"0xd3cabad6adab0b5...",
-                        "transactionIndex":"0",
-                        "from":"0x5abfec25f74cd88437631a7731906932776356f9",
-                        "to":"",
-                        "value":"11901464239480000000000000",
-                        "gas":"2000000",
-                        "gasPrice":"10000000000000",
-                        "isError":"0",
-                        "input":"0x6060b91f525b5ae7a03d...",
-                        "contractAddress":"0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae",
-                        "cumulativeGasUsed":"1436963",
-                        "gasUsed":"1436963",
-                        "confirmations":"3921024"
-                    }, {
-                        ...
-                    }
-                ]
-            }
-            ```
+
+            .. code-block:: python
+
+                {
+                    "status":"1",
+                    "message":"OK",
+                    "result":[
+                        {
+                            "blockNumber":"54092",
+                            "timeStamp":"1439048640",
+                            "hash":"0x9c81f44c29ff0226f83...",
+                            "nonce":"0",
+                            "blockHash":"0xd3cabad6adab0b5...",
+                            "transactionIndex":"0",
+                            "from":"0x5abfec25f74cd88437631a7731906932776356f9",
+                            "to":"",
+                            "value":"11901464239480000000000000",
+                            "gas":"2000000",
+                            "gasPrice":"10000000000000",
+                            "isError":"0",
+                            "input":"0x6060b91f525b5ae7a03d...",
+                            "contractAddress":"0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae",
+                            "cumulativeGasUsed":"1436963",
+                            "gasUsed":"1436963",
+                            "confirmations":"3921024"
+                        }, {
+                            ...
+                        }
+                    ]
+                }
+
         """
         self.transactions = self.etherscan_response.get('result')
 
@@ -139,7 +143,9 @@ class TransactionsByHashResponse(EtherscanResponse):
         """
         Parses a transactions by hash request response. Example API
         response output:
-            ```
+
+            .. code-block:: python
+
             {
                 "status":"1",
                 "message":"OK",
@@ -160,7 +166,7 @@ class TransactionsByHashResponse(EtherscanResponse):
                     }
                 ]
             }
-            ```
+
         """
         self.transaction = self.etherscan_response.get('result')[0]
 
@@ -171,21 +177,23 @@ class BlocksMinedByAddressResponse(EtherscanResponse):
         """
         Parses a blocks mined by address request response. Example API
         response output:
-            ```
-            {
-                "status":"1",
-                "message":"OK",
-                "result":[
-                    {
-                        "blockNumber":"3462296",
-                        "timeStamp":"1491118514",
-                        "blockReward":"5194770940000000000"
-                    }, {
-                        ...
-                    }
-                ]
-            }
-            ```
+
+            .. code-block:: python
+
+                {
+                    "status":"1",
+                    "message":"OK",
+                    "result":[
+                        {
+                            "blockNumber":"3462296",
+                            "timeStamp":"1491118514",
+                            "blockReward":"5194770940000000000"
+                        }, {
+                            ...
+                        }
+                    ]
+                }
+
         """
         self.blocks = self.etherscan_response.get('result')
 
@@ -196,41 +204,43 @@ class ContractABIByAddressResponse(EtherscanResponse):
         """
         Parses a contract abi by address request response. Example API
         response output:
-            ```
-            {
-                "status":"1",
-                "message":"OK",
-                "result":[
-                    {
-                        'constant': True,
-                        'inputs': [
-                            {
-                                'name': '',
-                                'type': 'uint256'
-                            }
-                        ],
-                        'name': 'proposals',
-                        'outputs': [
-                            {'name': 'recipient', 'type': 'address'},
-                            {'name': 'amount', 'type': 'uint256'},
-                            {'name': 'description', 'type': 'string'},
-                            {'name': 'votingDeadline', 'type': 'uint256'},
-                            {'name': 'open', 'type': 'bool'},
-                            {'name': 'proposalPassed', 'type': 'bool'},
-                            {'name': 'proposalHash', 'type': 'bytes32'},
-                            {'name': 'proposalDeposit', 'type': 'uint256'},
-                            {'name': 'newCurator', 'type': 'bool'},
-                            {'name': 'yea', 'type': 'uint256'},
-                            {'name': 'nay', 'type': 'uint256'},
-                            {'name': 'creator', 'type': 'address'}
-                        ],
-                        'type': 'function'
-                    }, {
-                        ...
-                    }
-                ]
-            }
-            ```
+
+            .. code-block:: python
+
+                {
+                    "status":"1",
+                    "message":"OK",
+                    "result":[
+                        {
+                            'constant': True,
+                            'inputs': [
+                                {
+                                    'name': '',
+                                    'type': 'uint256'
+                                }
+                            ],
+                            'name': 'proposals',
+                            'outputs': [
+                                {'name': 'recipient', 'type': 'address'},
+                                {'name': 'amount', 'type': 'uint256'},
+                                {'name': 'description', 'type': 'string'},
+                                {'name': 'votingDeadline', 'type': 'uint256'},
+                                {'name': 'open', 'type': 'bool'},
+                                {'name': 'proposalPassed', 'type': 'bool'},
+                                {'name': 'proposalHash', 'type': 'bytes32'},
+                                {'name': 'proposalDeposit', 'type': 'uint256'},
+                                {'name': 'newCurator', 'type': 'bool'},
+                                {'name': 'yea', 'type': 'uint256'},
+                                {'name': 'nay', 'type': 'uint256'},
+                                {'name': 'creator', 'type': 'address'}
+                            ],
+                            'type': 'function'
+                        }, {
+                            ...
+                        }
+                    ]
+                }
+
         """
         self.contract_abi = self.etherscan_response.get('result')
 
@@ -241,15 +251,17 @@ class ContractStatusResponse(EtherscanResponse):
         """
         Parses a transaction status by hash request response. Example API
         response output:
-            ```
-            {
-                "status":"1",
-                "message":"OK",
-                "result":{
-                    "isError":"1",
-                    "errDescription":"Bad jump destination"
+
+            .. code-block:: python
+
+                {
+                    "status":"1",
+                    "message":"OK",
+                    "result":{
+                        "isError":"1",
+                        "errDescription":"Bad jump destination"
+                    }
                 }
-            }
-            ```
+
         """
         self.contract_status = self.etherscan_response.get('result')
