@@ -1,7 +1,7 @@
 import unittest
 import operator
 
-from pyetherscan.lib import client, response
+from pyetherscan import client, response
 
 
 class BaseClientTestCase(unittest.TestCase):
