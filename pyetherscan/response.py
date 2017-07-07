@@ -323,6 +323,27 @@ class ContractABIByAddressResponse(EtherscanResponse):
 
 
 class ContractStatusResponse(EtherscanResponse):
+    """
+    Represents a response object for a contract status call within the Etherscan `Contracts` endpoint.
+
+    Available attributes:
+      - `contract_status`: The status of the contract returned as a json object.
+
+    Example:
+
+        .. code-block:: python
+            In [1]: response = ContractStatusResponse(resp)
+
+            In [2]: response.contract_status
+            Out[2]: {
+                "status":"1",
+                "message":"OK",
+                "result":{
+                    "isError":"1",
+                    "errDescription":"Bad jump destination"
+                }
+            }
+    """
 
     def parse_response(self):
         """
@@ -342,3 +363,44 @@ class ContractStatusResponse(EtherscanResponse):
 
         """
         self.contract_status = self.etherscan_response.get('result')
+
+
+class TokenSupplyResponse(EtherscanResponse):
+    """
+    Represents a response object for a token supply call within the Etherscan `Tokens` endpoint.
+
+    Available attributes:
+      - `total_supply`: The total supply of the token returned as a float.
+
+    Example:
+
+        .. code-block:: python
+            In [1]: response = TokenSupplyResponse(resp)
+
+            In [2]: response.etherscan_response
+            Out[2]: {
+                "status":"1",
+                "message":"OK",
+                "result":"21265524714464"
+            }
+
+            In [3]: response.total_supply
+            Out[3]: 21265524714464.0
+    """
+
+    def parse_response(self):
+        """
+        Parses a token supply by address request response. Example API
+        response output:
+
+            .. code-block:: python
+
+                {
+                    "status":"1",
+                    "message":"OK",
+                    "result":"21265524714464"
+                }
+
+        """
+        self.total_supply = float(self.etherscan_response.get('result'))
+
