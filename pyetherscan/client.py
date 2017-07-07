@@ -67,6 +67,7 @@ class Client(object):
     _startblock = '&startblock={startblock}'
     _endblock = '&endblock={endblock}'
     _hash = '&txhash={hash}'
+    _contract_address = '&contractaddress={contract_address}'
 
     # Define etherscan API module names
     account_module = 'account'
@@ -537,3 +538,45 @@ class Client(object):
             url=request_url,
             response_object=response.ContractStatusResponse
         )
+
+
+    #####################
+    # Token API methods #
+    #####################
+    def get_token_supply_by_address(self, address):
+        """
+        Retrieves total token supply for an ERC-20 compliant token given a contract address.
+
+        :param address: The address of the token contract
+        :type address: str
+        :returns: A ``response.TokenSupplyResponse`` instance
+
+        Example Usage:
+
+            .. code-block:: python
+
+                In [1]: client = Client()
+
+                In [2]: contract_address = '0x57d90b64a1a57749b0f932f1a3395792e12e7055'
+
+                In [3]: contract = client.get_token_supply_by_address(contract_address)
+
+                In [4]: contract.total_supply
+                Out[4]: 21265524714464.0
+
+        """
+        module_uri = self._module.format(module=self.token_module)
+        action_uri = self._action.format(action='tokensupply')
+        contract_address_uri = self._contract_address.format(contract_address=address)
+
+        request_url = self._base_url + \
+            module_uri + \
+            action_uri + \
+            contract_address_uri + \
+            self.key_uri
+
+        return self._get_request(
+            url=request_url,
+            response_object=response.TokenSupplyResponse
+        )
+
