@@ -5,7 +5,7 @@ See :doc:`/response` for an overview.
 """
 import json
 
-from . import error
+from . import errors
 
 
 class EtherscanResponse(object):
@@ -26,14 +26,14 @@ class EtherscanResponse(object):
 
     def __init__(self, resp):
         if resp.status_code == 403:
-            raise error.EtherscanRequestError(
+            raise errors.EtherscanRequestError(
                 'Rate limit reached.'
             )
 
         try:
             self.etherscan_response = json.loads(resp.text)
         except AttributeError:
-            raise error.EtherscanRequestError(
+            raise errors.EtherscanRequestError(
                 'Invalid request: \n{request}'.format(
                     request=resp
                 )
