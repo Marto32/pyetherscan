@@ -98,4 +98,4 @@ ENV/
 .DS_Store
 
 # vim
-# *.swp
+*.swp
