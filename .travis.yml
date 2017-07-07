@@ -11,12 +11,16 @@ python:
   - "nightly" # currently points to 3.7-dev
 
 # command to install dependencies
-install: "pip install -r requirements.txt"
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
 
 # command to run tests
-script: python test.py
+script:
+  coverage run --source=pyetherscan test.py
+after_success:
+  coveralls
 
 notifications:
     on_success: never
     on_failure: always
-
