@@ -16,9 +16,12 @@ class Client(object):
     """
     Represents an Etherscan API client.
 
-    Initialized using the API_KEY environment variable (or you may pass the API key as an argument).
+    Initialized using the API_KEY environment variable (or you may pass the API
+    key as an argument).
 
-    You can use this object to query the Etherscan database for raw data for each endpoint (see Public Methods below). An example is shown in the Example Usage section below.
+    You can use this object to query the Etherscan database for raw data for
+    each endpoint (see Public Methods below). An example is shown in the
+    Example Usage section below.
 
     Public Attributes:
         - ``apikey``
@@ -67,6 +70,7 @@ class Client(object):
     _startblock = '&startblock={startblock}'
     _endblock = '&endblock={endblock}'
     _hash = '&txhash={hash}'
+    _contract_address = '&contractaddress={contract_address}'
 
     # Define etherscan API module names
     account_module = 'account'
@@ -107,7 +111,7 @@ class Client(object):
             _timeout=self.timeout
         )
 
-    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000, stop_max_attempt_number=5)
+    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000, stop_max_attempt_number=5)  # noqa
     def _get_request(self, url, response_object):
         """
         Makes a standardized GET request.
@@ -116,7 +120,7 @@ class Client(object):
         resp = requests.get(**payload)
         return response_object(resp)
 
-    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000, stop_max_attempt_number=5)
+    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000, stop_max_attempt_number=5)  # noqa
     def _post_request(self, url, response_object):
         """
         Makes a standardized POST request.
@@ -171,7 +175,8 @@ class Client(object):
         """
         Obtains the balance for multiple addresses.
 
-        :param addresses: A list of ethereum addresses, each address should be a string
+        :param addresses: A list of ethereum addresses, each address should
+            be a string
         :type addresses: list
         :returns: A ``response.MultiAddressBalanceResponse`` instance
 
@@ -181,7 +186,11 @@ class Client(object):
 
                 In [1]: client = Client()
 
-                In [2]: addresses = addresses = ['0xddbd2b932c763ba5b1b7ae3b362eac3e8d40121a','0x63a9975ba31b0b9626b34300f7f627147df1f526','0x198ef1ec325a96cc354c7266a038be8b5c558f67']
+                In [2]: addresses = addresses = [
+                    '0xddbd2b932c763ba5b1b7ae3b362eac3e8d40121a',
+                    '0x63a9975ba31b0b9626b34300f7f627147df1f526',
+                    '0x198ef1ec325a96cc354c7266a038be8b5c558f67'
+                ]
 
                 In [3]: address_balances = client.get_multi_balance(addresses)
 
@@ -536,4 +545,96 @@ class Client(object):
         return self._get_request(
             url=request_url,
             response_object=response.ContractStatusResponse
+        )
+
+
+    #####################
+    # Token API methods #
+    #####################
+    def get_token_supply_by_address(self, address):
+        """
+        Retrieves total token supply for an ERC-20 compliant token given a
+        contract address.
+
+        :param address: The address of the token contract
+        :type address: str
+        :returns: A ``response.TokenSupplyResponse`` instance
+
+        Example Usage:
+
+            .. code-block:: python
+
+                In [1]: client = Client()
+
+                In [2]: contract_address = '0x57d90b64a1a57749b0f932f1a3395792e12e7055'
+
+                In [3]: contract = client.get_token_supply_by_address(
+                    contract_address
+                )
+
+                In [4]: contract.total_supply
+                Out[4]: 21265524714464.0
+
+        """
+        module_uri = self._module.format(module=self.token_module)
+        action_uri = self._action.format(action='tokensupply')
+        contract_address_uri = self._contract_address.format(contract_address=address)
+
+        request_url = self._base_url + \
+            module_uri + \
+            action_uri + \
+            contract_address_uri + \
+            self.key_uri
+
+        return self._get_request(
+            url=request_url,
+            response_object=response.TokenSupplyResponse
+        )
+
+    def get_token_balance_by_address(self, contract_address, account_address):
+        """
+        Retrieves ERC-20 compliant token balance for an account given a
+        contract account address.
+
+        :param contract_address: The address of the token contract
+        :type contract_address: str
+        :param account_address: The address of the user account for which the
+            token balance is being queried
+        :type account_address: str
+        :returns: A ``response.TokenAccountBalanceResponse`` instance
+
+        Example Usage:
+
+            .. code-block:: python
+
+                In [1]: client = Client()
+
+                In [2]: contract_address = '0x57d90b64a1a57749b0f932f1a3395792e12e7055'
+
+                In [3]: account_address = '0xe04f27eb70e025b78871a2ad7eabe85e61212761'
+
+                In [4]: token_balance = client.get_token_balance_by_address(
+                    contract_address,
+                    account_address
+                )
+
+                In [4]: token_balance.balance
+                Out[4]: 135499.0
+
+        """
+        module_uri = self._module.format(module=self.account_module)
+        action_uri = self._action.format(action='tokenbalance')
+        contract_address_uri = self._contract_address.format(contract_address=contract_address) # noqa
+        address_uri = self._address.format(address=account_address)
+
+        request_url = self._base_url + \
+            module_uri + \
+            action_uri + \
+            contract_address_uri + \
+            address_uri + \
+            self.key_uri
+
+        return self._get_request(
+            url=request_url,
+            response_object=response.TokenAccountBalanceResponse
         )
