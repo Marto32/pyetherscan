@@ -104,7 +104,8 @@ class SingleAddressBalanceResponse(EtherscanResponse):
 
 class MultiAddressBalanceResponse(EtherscanResponse):
     """
-    Represents a response object for a multi address account balance call within the Etherscan `Accounts` endpoint.
+    Represents a response object for a multi address account balance call
+    within the Etherscan `Accounts` endpoint.
 
     Available attributes:
       - `balances`: The balances of the addresses returned as a dict.
@@ -324,7 +325,8 @@ class ContractABIByAddressResponse(EtherscanResponse):
 
 class ContractStatusResponse(EtherscanResponse):
     """
-    Represents a response object for a contract status call within the Etherscan `Contracts` endpoint.
+    Represents a response object for a contract status call within the
+    Etherscan `Contracts` endpoint.
 
     Available attributes:
       - `contract_status`: The status of the contract returned as a json object.
@@ -404,3 +406,44 @@ class TokenSupplyResponse(EtherscanResponse):
         """
         self.total_supply = float(self.etherscan_response.get('result'))
 
+
+class TokenAccountBalanceResponse(EtherscanResponse):
+    """
+    Represents a response object for a token account balance call within the
+    Etherscan `Tokens` endpoint.
+
+    Available attributes:
+      - `balance`: The account balance of a token (by contract address)
+      returned as a float.
+
+    Example:
+
+        .. code-block:: python
+            In [1]: response = TokenSupplyResponse(resp)
+
+            In [2]: response.etherscan_response
+            Out[2]: {
+                "status":"1",
+                "message":"OK",
+                "result":"135499"
+            }
+
+            In [3]: response.balance
+            Out[3]: 135499.0
+    """
+
+    def parse_response(self):
+        """
+        Parses a token account balance request response. Example API
+        response output:
+
+            .. code-block:: python
+
+                {
+                    "status":"1",
+                    "message":"OK",
+                    "result":"135499"
+                }
+
+        """
+        self.balance = float(self.etherscan_response.get('result'))

@@ -255,6 +255,25 @@ class TestTokenEndpoint(BaseClientTestCase):
         self.assertEqual(21265524714464.0, result.total_supply)
         self.base_etherscan_response_status(result)
 
+    def test_get_token_balance_by_address(self):
+        expected_response = {
+            u'status': u'1',
+            u'message': u'OK',
+            u'result': u'135499'
+        }
+
+        contract_address = '0x57d90b64a1a57749b0f932f1a3395792e12e7055'
+        account_address = '0xe04f27eb70e025b78871a2ad7eabe85e61212761'
+        result = self.client.get_token_balance_by_address(
+            contract_address,
+            account_address
+        )
+
+        self.assertEqual(response.TokenAccountBalanceResponse, type(result))
+        self.assertEqual(expected_response, result.etherscan_response)
+        self.assertEqual(135499.0, result.balance)
+        self.base_etherscan_response_status(result)
+
 
 if __name__ == '__main__':
     unittest.main()
