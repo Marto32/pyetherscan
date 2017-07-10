@@ -1,10 +1,5 @@
 """
 Library for connecting to the Etherscan API using a self contained client.
-
-See :doc:`/client` for an overview.
-
-Available objects:
- - ``Client``: An Etherscan API client
 """
 import requests
 
@@ -28,12 +23,12 @@ class Client(object):
         - ``timeout``
 
     Public Methods:
-        - ``get_single_balance``
-        - ``get_multi_balance``
-        - ``get_transactions_by_address``
-        - ``get_transaction_by_hash``
-        - ``get_blocks_mined_by_address``
-        - ``get_contract_abi``
+        - :py:meth:`get_single_balance`
+        - :py:meth:`get_multi_balance`
+        - :py:meth:`get_transactions_by_address`
+        - :py:meth:`get_transaction_by_hash`
+        - :py:meth:`get_blocks_mined_by_address`
+        - :py:meth:`get_contract_abi`
 
     Example Usage:
 
