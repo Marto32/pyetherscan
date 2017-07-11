@@ -25,8 +25,8 @@ class Transaction(object):
     """
 
     def __init__(self, address=None, hash=None):
-        self.address = address
-        self.hash = hash
+        self._address = address
+        self._hash = hash
 
         try:
             assert address is not None or hash is not None
