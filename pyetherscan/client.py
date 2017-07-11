@@ -77,7 +77,7 @@ class Client(object):
     token_module = 'stats'
     stats_module = 'stats'
 
-    def __init__(self, apikey=settings.API_KEY, timeout=5):
+    def __init__(self, apikey=settings.ETHERSCAN_API_KEY, timeout=5):
         self.timeout = timeout
         self.apikey = apikey
 
@@ -133,7 +133,7 @@ class Client(object):
 
         :param address: The ethereum address
         :type address: str
-        :returns: A ``response.SingleAddressBalanceResponse`` instance
+        :returns: A :py:obj:`response.SingleAddressBalanceResponse` instance
 
         Example Usage:
 
@@ -173,7 +173,7 @@ class Client(object):
         :param addresses: A list of ethereum addresses, each address should
             be a string
         :type addresses: list
-        :returns: A ``response.MultiAddressBalanceResponse`` instance
+        :returns: A :py:obj:`response.MultiAddressBalanceResponse` instance
 
         Example Usage:
 
@@ -232,7 +232,7 @@ class Client(object):
 
         :param address: The ethereum address
         :type address: str
-        :returns: A ``response.TransactionsByAddressResponse`` instance
+        :returns: A :py:obj:`response.TransactionsByAddressResponse` instance
 
         Example Usage:
 
@@ -320,7 +320,7 @@ class Client(object):
 
         :param hash: The ethereum transaction hash
         :type hash: hash
-        :returns: A ``response.TransactionsByHashResponse`` instance
+        :returns: A :py:obj:`response.TransactionsByHashResponse` instance
 
         Example Usage:
 
@@ -371,7 +371,7 @@ class Client(object):
 
         :param address: The ethereum address
         :type address: str
-        :returns: A ``response.BlocksMinedByAddressResponse`` instance
+        :returns: A :py:obj:`response.BlocksMinedByAddressResponse` instance
 
         Example Usage:
 
@@ -439,7 +439,7 @@ class Client(object):
 
         :param address: The ethereum address of the contract
         :type address: str
-        :returns: A ``response.ContractABIByAddressResponse`` instance
+        :returns: A :py:obj:`response.ContractABIByAddressResponse` instance
 
         Example Usage:
 
@@ -504,7 +504,7 @@ class Client(object):
 
         :param transaction_hash: The hash of the contract
         :type transaction_hash: str
-        :returns: A ``response.ContractStatusResponse`` instance
+        :returns: A :py:obj:`response.ContractStatusResponse` instance
 
         Example Usage:
 
@@ -553,7 +553,7 @@ class Client(object):
 
         :param address: The address of the token contract
         :type address: str
-        :returns: A ``response.TokenSupplyResponse`` instance
+        :returns: A :py:obj:`response.TokenSupplyResponse` instance
 
         Example Usage:
 
@@ -596,7 +596,7 @@ class Client(object):
         :param account_address: The address of the user account for which the
             token balance is being queried
         :type account_address: str
-        :returns: A ``response.TokenAccountBalanceResponse`` instance
+        :returns: A :py:obj:`response.TokenAccountBalanceResponse` instance
 
         Example Usage:
 
