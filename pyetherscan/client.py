@@ -86,9 +86,9 @@ class Client(object):
                 'You must supply an API key.'
             )
 
-        if not isinstance(self.timeout, int):
+        if not isinstance(self.timeout, (float, int)):
             raise error.EtherscanInitializationError(
-                'Timeout seconds must be an integer.'
+                'Timeout seconds must be an integer or decimal.'
             )
 
         self.key_uri = self._key.format(key=self.apikey)
