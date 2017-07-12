@@ -45,6 +45,14 @@ class EtherscanResponse(object):
             self.message = self.etherscan_response.get('message')
             self.parse_response()
 
+        if self.status not in [1, "1"]:
+            raise error.EtherscanRequestError(
+                '{message}\n{result}'.format(
+                    message=self.message,
+                    result=self.etherscan_response.get('result')
+                )
+            )
+
     def parse_response(self):
         """
         The method that will parse the response object and store

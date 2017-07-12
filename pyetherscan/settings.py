@@ -1,3 +1,3 @@
 import os
 
-API_KEY = os.environ.get('API_KEY')
+ETHERSCAN_API_KEY = os.environ.get('ETHERSCAN_API_KEY')

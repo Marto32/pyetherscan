@@ -1,10 +1,5 @@
 """
 Library for connecting to the Etherscan API using a self contained client.
-
-See :doc:`/client` for an overview.
-
-Available objects:
- - ``Client``: An Etherscan API client
 """
 import requests
 
@@ -28,12 +23,12 @@ class Client(object):
         - ``timeout``
 
     Public Methods:
-        - ``get_single_balance``
-        - ``get_multi_balance``
-        - ``get_transactions_by_address``
-        - ``get_transaction_by_hash``
-        - ``get_blocks_mined_by_address``
-        - ``get_contract_abi``
+        - :py:meth:`get_single_balance`
+        - :py:meth:`get_multi_balance`
+        - :py:meth:`get_transactions_by_address`
+        - :py:meth:`get_transaction_by_hash`
+        - :py:meth:`get_blocks_mined_by_address`
+        - :py:meth:`get_contract_abi`
 
     Example Usage:
 
@@ -82,7 +77,7 @@ class Client(object):
     token_module = 'stats'
     stats_module = 'stats'
 
-    def __init__(self, apikey=settings.API_KEY, timeout=5):
+    def __init__(self, apikey=settings.ETHERSCAN_API_KEY, timeout=5):
         self.timeout = timeout
         self.apikey = apikey
 
@@ -91,9 +86,9 @@ class Client(object):
                 'You must supply an API key.'
             )
 
-        if not isinstance(self.timeout, int):
+        if not isinstance(self.timeout, (float, int)):
             raise error.EtherscanInitializationError(
-                'Timeout seconds must be an integer.'
+                'Timeout seconds must be an integer or decimal.'
             )
 
         self.key_uri = self._key.format(key=self.apikey)
@@ -138,7 +133,7 @@ class Client(object):
 
         :param address: The ethereum address
         :type address: str
-        :returns: A ``response.SingleAddressBalanceResponse`` instance
+        :returns: A :py:obj:`response.SingleAddressBalanceResponse` instance
 
         Example Usage:
 
@@ -178,7 +173,7 @@ class Client(object):
         :param addresses: A list of ethereum addresses, each address should
             be a string
         :type addresses: list
-        :returns: A ``response.MultiAddressBalanceResponse`` instance
+        :returns: A :py:obj:`response.MultiAddressBalanceResponse` instance
 
         Example Usage:
 
@@ -231,13 +226,30 @@ class Client(object):
         )
 
     def get_transactions_by_address(self, address, startblock=None,
-        endblock=None, sort='asc', offset=None, page=None):
+        endblock=None, sort='asc', offset=None, page=None, internal=False):
         """
         Obtains a list of transactions for an ethereum address.
 
         :param address: The ethereum address
         :type address: str
-        :returns: A ``response.TransactionsByAddressResponse`` instance
+        :param startblock: An optional start block to limit transactions
+            (defaults to None)
+        :type startblock: int
+        :param endblock: An optional end block to limit transactions
+            (defaults to None)
+        :type endblock: int
+        :param sort: Sort result set (defaults to asc)
+        :type sort: str
+        :param offset: The max number of results (must be used
+            with ``page``)
+        :type offset: int
+        :param page: The page number of the result set to pull (must be used
+            with ``max_results``)
+        :type page: int
+        :param internal: Whether or not to limit transactions to internal
+            transactions (between contracts) - defaults to False
+        :type internal: bool
+        :returns: A :py:obj:`response.TransactionsByAddressResponse` instance
 
         Example Usage:
 
@@ -249,7 +261,7 @@ class Client(object):
 
                 In [3]: address_transactions = client.get_transactions_by_address(address)
 
-                In [4]: address_balances.balances
+                In [4]: address_transactions.transactions
                 Out[4]: [
                     {
                         u'nonce': u'0',
@@ -273,7 +285,8 @@ class Client(object):
 
         """
         module_uri = self._module.format(module=self.account_module)
-        action_uri = self._action.format(action='txlist')
+        action = 'txlistinternal' if internal else 'txlist'
+        action_uri = self._action.format(action=action)
         address_uri = self._address.format(address=address)
 
         if startblock is None:
@@ -325,7 +338,7 @@ class Client(object):
 
         :param hash: The ethereum transaction hash
         :type hash: hash
-        :returns: A ``response.TransactionsByHashResponse`` instance
+        :returns: A :py:obj:`response.TransactionsByHashResponse` instance
 
         Example Usage:
 
@@ -376,7 +389,7 @@ class Client(object):
 
         :param address: The ethereum address
         :type address: str
-        :returns: A ``response.BlocksMinedByAddressResponse`` instance
+        :returns: A :py:obj:`response.BlocksMinedByAddressResponse` instance
 
         Example Usage:
 
@@ -444,7 +457,7 @@ class Client(object):
 
         :param address: The ethereum address of the contract
         :type address: str
-        :returns: A ``response.ContractABIByAddressResponse`` instance
+        :returns: A :py:obj:`response.ContractABIByAddressResponse` instance
 
         Example Usage:
 
@@ -509,7 +522,7 @@ class Client(object):
 
         :param transaction_hash: The hash of the contract
         :type transaction_hash: str
-        :returns: A ``response.ContractStatusResponse`` instance
+        :returns: A :py:obj:`response.ContractStatusResponse` instance
 
         Example Usage:
 
@@ -558,7 +571,7 @@ class Client(object):
 
         :param address: The address of the token contract
         :type address: str
-        :returns: A ``response.TokenSupplyResponse`` instance
+        :returns: A :py:obj:`response.TokenSupplyResponse` instance
 
         Example Usage:
 
@@ -601,7 +614,7 @@ class Client(object):
         :param account_address: The address of the user account for which the
             token balance is being queried
         :type account_address: str
-        :returns: A ``response.TokenAccountBalanceResponse`` instance
+        :returns: A :py:obj:`response.TokenAccountBalanceResponse` instance
 
         Example Usage:
 

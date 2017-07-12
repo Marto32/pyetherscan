@@ -1,6 +1,7 @@
 [run]
 omit =
     *test.py
+    */tests/*
     */docs/*
     */python?.?/*
     */lib-python/?.?/*.py

@@ -1,7 +1,7 @@
 import unittest
 import json
 
-from pyetherscan import client, response
+from pyetherscan import client, response, error
 
 
 class BaseClientTestCase(unittest.TestCase):
@@ -13,6 +13,20 @@ class BaseClientTestCase(unittest.TestCase):
         self.assertEqual(200, result.response_status_code)
         self.assertEqual('1', result.status)
         self.assertEqual('OK', result.message)
+
+
+class TestInitialization(BaseClientTestCase):
+
+    def test_initialization_objects(self):
+
+        # Test api format error
+        with self.assertRaises(error.EtherscanInitializationError):
+            client.Client(apikey=5)
+
+        # Test timeout error
+        with self.assertRaises(error.EtherscanInitializationError):
+            client.Client(timeout='5')
+
 
 class TestAccountEndpoint(BaseClientTestCase):
 
@@ -65,6 +79,12 @@ class TestAccountEndpoint(BaseClientTestCase):
         self.assertEqual(balances, result.balances)
         self.base_etherscan_response_status(result)
 
+        with self.assertRaises(error.EtherscanAddressError):
+            self.client.get_multi_balance(addresses='')
+
+        with self.assertRaises(error.EtherscanAddressError):
+            self.client.get_multi_balance(addresses=['' for x in range(30)])
+
     def test_get_transactions_by_address(self):
         address = '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'
         result = self.client.get_transactions_by_address(address)
@@ -72,6 +92,32 @@ class TestAccountEndpoint(BaseClientTestCase):
         self.assertEqual(response.TransactionsByAddressResponse, type(result))
         # self.assertEqual(expected_response_result_sorted, etherscan_response_sorted)
         self.base_etherscan_response_status(result)
+
+    def test_get_transactions_by_address_with_block_offset(self):
+        address = '0x2c1ba59d6f58433fb1eaee7d20b26ed83bda51a3'
+        startblock = 0
+        endblock = 2702578
+        offset = 10
+        page = 1
+
+        result = self.client.get_transactions_by_address(
+            address=address,
+            startblock=startblock,
+            endblock=endblock,
+            offset=offset,
+            page=page
+        )
+
+        self.assertEqual(response.TransactionsByAddressResponse, type(result))
+        self.base_etherscan_response_status(result)
+
+        with self.assertRaises(error.EtherscanTransactionError):
+            self.client.get_transactions_by_address(
+                address=address,
+                startblock=startblock,
+                endblock=endblock,
+                offset=offset
+            )
 
     def test_get_transaction_by_hash(self):
         transaction = {
@@ -130,6 +176,32 @@ class TestAccountEndpoint(BaseClientTestCase):
             result.etherscan_response.get('message')
         )
         self.base_etherscan_response_status(result)
+
+    def test_get_blocks_mined_by_address_with_block_offset(self):
+        address = '0x9dd134d14d1e65f84b706d6f205cd5b1cd03a46b'
+        startblock = 0
+        endblock = 3462296
+        offset = 10
+        page = 1
+
+        result = self.client.get_transactions_by_address(
+            address=address,
+            startblock=startblock,
+            endblock=endblock,
+            offset=offset,
+            page=page
+        )
+
+        self.assertEqual(response.TransactionsByAddressResponse, type(result))
+        self.base_etherscan_response_status(result)
+
+        with self.assertRaises(error.EtherscanTransactionError):
+            self.client.get_transactions_by_address(
+                address=address,
+                startblock=startblock,
+                endblock=endblock,
+                offset=offset
+            )
 
 
 class TestContractEndpoint(BaseClientTestCase):
@@ -273,7 +345,3 @@ class TestTokenEndpoint(BaseClientTestCase):
         self.assertEqual(expected_response, result.etherscan_response)
         self.assertEqual(135499.0, result.balance)
         self.base_etherscan_response_status(result)
-
-
-if __name__ == '__main__':
-    unittest.main()
