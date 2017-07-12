@@ -226,12 +226,29 @@ class Client(object):
         )
 
     def get_transactions_by_address(self, address, startblock=None,
-        endblock=None, sort='asc', offset=None, page=None):
+        endblock=None, sort='asc', offset=None, page=None, internal=False):
         """
         Obtains a list of transactions for an ethereum address.
 
         :param address: The ethereum address
         :type address: str
+        :param startblock: An optional start block to limit transactions
+            (defaults to None)
+        :type startblock: int
+        :param endblock: An optional end block to limit transactions
+            (defaults to None)
+        :type endblock: int
+        :param sort: Sort result set (defaults to asc)
+        :type sort: str
+        :param offset: The max number of results (must be used
+            with ``page``)
+        :type offset: int
+        :param page: The page number of the result set to pull (must be used
+            with ``max_results``)
+        :type page: int
+        :param internal: Whether or not to limit transactions to internal
+            transactions (between contracts) - defaults to False
+        :type internal: bool
         :returns: A :py:obj:`response.TransactionsByAddressResponse` instance
 
         Example Usage:
@@ -244,7 +261,7 @@ class Client(object):
 
                 In [3]: address_transactions = client.get_transactions_by_address(address)
 
-                In [4]: address_balances.balances
+                In [4]: address_transactions.transactions
                 Out[4]: [
                     {
                         u'nonce': u'0',
@@ -268,7 +285,8 @@ class Client(object):
 
         """
         module_uri = self._module.format(module=self.account_module)
-        action_uri = self._action.format(action='txlist')
+        action = 'txlistinternal' if internal else 'txlist'
+        action_uri = self._action.format(action=action)
         address_uri = self._address.format(address=address)
 
         if startblock is None:
