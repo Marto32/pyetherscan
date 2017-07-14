@@ -452,7 +452,7 @@ class Block(object):
         return self._time_stamp or self._retrieve_time_stamp()
 
     def _retrieve_block_miner(self):
-        miner = self._raw_block_data.get('blockMiner')
+        miner = str(self._raw_block_data.get('blockMiner'))
         self._block_miner = Address(miner)
         return self._block_miner
 
