@@ -157,7 +157,7 @@ class Transaction(object):
 
     @property
     def block(self):
-        return Block(self._block_number)
+        return Block(self.block_number)
 
     def _retrieve_to(self):
         self._to = self._data.get('to')
@@ -345,7 +345,8 @@ class Address(object):
         return TransactionContainer(self._raw_transactions)
 
     def _retrieve_block_list(self):
-        self._block_list = self.client.get_blocks_mined_by_address(self.address)
+        response = self.client.get_blocks_mined_by_address(self.address)
+        self._block_list = response.blocks
         return self._block_list
 
     @property
