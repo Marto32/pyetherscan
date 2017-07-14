@@ -482,7 +482,7 @@ class Block(object):
         uncles = self._raw_block_data.get('uncles')
         parsed_uncles = [
             {
-                'miner': Address(u['miner']),
+                'miner': Address(str(u['miner'])),
                 'block_reward': float(u['blockreward'])
             } for u in uncles
         ]
