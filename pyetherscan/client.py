@@ -11,8 +11,8 @@ class Client(object):
     """
     Represents an Etherscan API client.
 
-    Initialized using the API_KEY environment variable (or you may pass the API
-    key as an argument).
+    Initialized using the ETHERSCAN_API_KEY environment variable (or you may
+    pass the API key as an argument).
 
     You can use this object to query the Etherscan database for raw data for
     each endpoint (see Public Methods below). An example is shown in the

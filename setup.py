@@ -1,11 +1,19 @@
 from distutils.core import setup
+from setuptools import find_packages
+from os import path
 
+here = path.abspath(path.dirname(__file__))
+
+# Get the long description from the README file
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name='pyetherscan',
-    packages=['pyetherscan'],
+    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     version='0.0.0',
     description='An unofficial wrapper for the Etherscan.io API',
+    long_description=long_description,
     author='Michael Martorella',
     author_email='michaelmartorella@gmail.com',
     url='https://github.com/Marto32/pyetherscan',
