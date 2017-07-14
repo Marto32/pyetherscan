@@ -260,6 +260,9 @@ class Address(object):
         - ``balance``
         - ``blocks_mined``
 
+    Public Methods:
+        - :py:method:`token_balance`
+
     Example Usage:
 
         .. code-block:: python
@@ -290,7 +293,21 @@ class Address(object):
         self._transactions = None
         self._balance = None
         self._block_list = None
-        # TODO Add block functionality to address
+
+    def token_balance(self, contract_address):
+        """
+        Obtains the address's ERC-20 compliant token balance given a token
+        contract address.
+
+        :param contract_address: The address of the token contract.
+        :type contract_address: str
+        :returns: The balance of the token as a float.
+        """
+        token = self.client.get_token_balance_by_address(
+            contract_address=contract_address,
+            account_address=self.address
+        )
+        return token.balance
 
     def _retrieve_balance(self):
         balance_object = self.client.get_single_balance(
@@ -487,12 +504,55 @@ class Block(object):
         return self._uncle_inclusion_reward or \
             self._retrieve_uncle_inclusion_reward()
 
+    def __repr__(self):
+        return 'Block(block_number={block_number})'.format(
+            block_number=self.block_number
+        )
 
-class Token(object):  # TODO
-    """Represents an ERC-20 compliant token."""
-    pass
 
+class Token(object):
+    """
+    Represents an ERC-20 compliant token.
 
-class Contract(object):  # TODO
-    """Represents a contract."""
-    pass
+    :param contract_address: The address of the Token contract
+    :type contract_address: str
+    """
+
+    def __init__(self, contract_address):
+        if not isinstance(contract_address, str):
+            raise error.EtherscanInitializationError(
+                "contract_address must be a string."
+            )
+
+        self.contract_address = contract_address
+        self.client = client.Client()
+
+        self._supply = None
+
+    def _retrieve_supply(self):
+        token = self.client.get_token_supply_by_address(self.contract_address)
+        self._supply = token.total_supply
+        return self._supply
+
+    @property
+    def supply(self):
+        return self._supply or self._retrieve_supply()
+
+    def token_balance(self, address):
+        """
+        The user balance of this token for a given address.
+
+        :param address: An ethereum address.
+        :type address: str
+        :returns: The balance as a float.
+        """
+        token = self.client.get_token_balance_by_address(
+            contract_address=self.contract_address,
+            account_address=address
+        )
+        return token.balance
+
+    def __repr__(self):
+        return 'Token(contract_address={contract_address})'.format(
+            contract_address=self.contract_address
+        )

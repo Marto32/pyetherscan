@@ -561,7 +561,6 @@ class Client(object):
             response_object=response.ContractStatusResponse
         )
 
-
     #####################
     # Token API methods #
     #####################
