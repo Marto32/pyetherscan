@@ -19,7 +19,7 @@ make note of your API key. Then install the library by running:
 .. code-block:: bash
     pip install pyetherscan
 
-When using the library, you must set the `ETHERSCAN_API_KEY`
+When using the library, you must set the ``ETHERSCAN_API_KEY``
 environment variable.
 
 Usage
@@ -44,13 +44,13 @@ object to interact directly with the `Etherscan API <https://etherscan.io/apis>`
     In [6]: address_balance.balance
     Out[6]: 748997604382925139479303
 
-The second is to use `pyetherscan` objects which fully abstract the API. These
-objects can be found in the :py:module:`ethereum` module and include:
+The second is to use ``pyetherscan`` objects which fully abstract the API. These
+objects can be found in the ``pyetherscan.ethereum`` module and include:
 
-    - :py:object:`Transaction`
-    - :py:object:`Address`
-    - :py:object:`Block`
-    - :py:object:`Token`
+    - ``Transaction``
+    - ``Address``
+    - ``Block``
+    - ``Token``
 
 For example:
 
@@ -67,3 +67,5 @@ For example:
        ...:     print(txn.value)
 
 Contributing
+============
+Fork this repository, create a branch and issue a PR.
