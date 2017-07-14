@@ -16,7 +16,7 @@ We recommend you install this library in a new virtual environment.
 To install, create a new `etherscan account <https://etherscan.io>`_ and
 make note of your API key. Then install the library by running:
 
-.. code-block:: bash
+.. code-block:: none
     pip install pyetherscan
 
 When using the library, you must set the ``ETHERSCAN_API_KEY``
