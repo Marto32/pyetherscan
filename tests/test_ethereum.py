@@ -15,7 +15,7 @@ class TestAddressObject(BaseEthereumTestCase):
     def test_retrieve_balance(self):
         _address = '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'
         address = ethereum.Address(address=_address)
-        self.assertEqual(address.balance, 748997604382925139479303.0)
+        self.assertEqual(address.balance, 747997604382925139479303.0)
 
         with self.assertRaises(error.EtherscanInitializationError):
             _bad_address = 5
@@ -183,20 +183,43 @@ class TestBlockObject(BaseEthereumTestCase):
 
         block_rewards = ethereum.Block(2165403)
 
-        self.assertEqual(block_rewards.time_stamp, self.data.get(
-            'timeStamp'))
-        self.assertEqual(block_rewards.block_miner, self.data.get(
-            'blockMiner'))
-        self.assertEqual(block_rewards.block_reward, self.data.get(
-            'blockReward'))
-        self.assertEqual(block_rewards.uncle_inclusion_reward, self.data.get(
-            'uncleInclusionReward'))
-        self.assertEqual(block_rewards.uncles, self.uncles)
+        self.assertEqual(
+            block_rewards.time_stamp,
+            int(self.data.get(
+                'timeStamp')
+            )
+        )
+        self.assertEqual(
+            block_rewards.block_miner.address,
+            ethereum.Address(
+                self.data.get('blockMiner')
+            ).address
+        )
+        self.assertEqual(
+            block_rewards.block_reward,
+            float(self.data.get(
+                'blockReward')
+            )
+        )
+        self.assertEqual(
+            block_rewards.uncle_inclusion_reward,
+            float(self.data.get('uncleInclusionReward'))
+        )
 
         datetime_mined = datetime.datetime.utcfromtimestamp(
             int(self.data.get('timeStamp'))
         )
         self.assertEqual(block_rewards.datetime_mined, datetime_mined)
+
+        # test uncles
+        uncle_one_address = block_rewards.uncles[0]['miner'].address
+        uncle_one_reward = block_rewards.uncles[0]['block_reward']
+
+        expected_uncle_address = self.uncles[0]['miner'].address
+        expected_uncle_reward = self.uncles[0]['block_reward']
+
+        self.assertEqual(uncle_one_address, expected_uncle_address)
+        self.assertEqual(uncle_one_reward, expected_uncle_reward)
 
 
 class TestBlockContainer(BaseEthereumTestCase):
@@ -211,9 +234,9 @@ class TestBlockContainer(BaseEthereumTestCase):
         data_list = [self.data for _ in range(5)]
 
         container = ethereum.TransactionContainer(data_list)
-        expected_block_number = ethereum.Block(
+        expected_block_number = int(ethereum.Block(
             self.data.get('blockNumber')
-        ).block_number
+        ).block_number)
 
         self.assertEqual(
             container[0].block_number,
