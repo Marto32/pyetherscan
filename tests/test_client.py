@@ -34,14 +34,14 @@ class TestAccountEndpoint(BaseClientTestCase):
         expected_response = {
             u'status': u'1',
             u'message': u'OK',
-            u'result': u'748997604382925139479303'
+            u'result': u'747997604382925139479303'
         }
         address = '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'
         result = self.client.get_single_balance(address)
 
         self.assertEqual(response.SingleAddressBalanceResponse, type(result))
         self.assertEqual(expected_response, result.etherscan_response)
-        self.assertEqual(748997604382925139479303.0, result.balance)
+        self.assertEqual(747997604382925139479303.0, result.balance)
         self.base_etherscan_response_status(result)
 
     def test_get_multi_balance(self):
@@ -344,4 +344,39 @@ class TestTokenEndpoint(BaseClientTestCase):
         self.assertEqual(response.TokenAccountBalanceResponse, type(result))
         self.assertEqual(expected_response, result.etherscan_response)
         self.assertEqual(135499.0, result.balance)
+        self.base_etherscan_response_status(result)
+
+
+class TestBlockEndpoint(BaseClientTestCase):
+
+    def test_get_block_rewards(self):
+        expected_response = {
+            "status": "1",
+            "message": "OK",
+            "result": {
+                "blockNumber": "2165403",
+                "timeStamp": "1472533979",
+                "blockMiner": "0x13a06d3dfe21e0db5c016c03ea7d2509f7f8d1e3",
+                "blockReward": "5314181600000000000",
+                "uncles": [
+                    {
+                        "miner": "0xbcdfc35b86bedf72f0cda046a3c16829a2ef41d1",
+                        "unclePosition": "0",
+                        "blockreward": "3750000000000000000"
+                    }, {
+                        "miner": "0x0d0c9855c722ff0c78f21e43aa275a5b8ea60dce",
+                        "unclePosition": "1",
+                        "blockreward": "3750000000000000000"
+                    }
+                ],
+                "uncleInclusionReward": "312500000000000000"
+            }
+        }
+        block_number = 2165403
+        result = self.client.get_block_and_uncle_rewards_by_block_number(
+            block_number
+        )
+
+        self.assertEqual(response.BlockRewardsResponse, type(result))
+        self.assertEqual(expected_response, result.etherscan_response)
         self.base_etherscan_response_status(result)

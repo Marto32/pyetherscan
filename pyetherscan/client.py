@@ -66,16 +66,17 @@ class Client(object):
     _endblock = '&endblock={endblock}'
     _hash = '&txhash={hash}'
     _contract_address = '&contractaddress={contract_address}'
+    _blockno = '&blockno={blockno}'
 
     # Define etherscan API module names
-    account_module = 'account'
-    contract_module = 'contract'
-    transaction_module = 'transaction'
-    block_module = 'block'
-    event_log_module = 'logs'
-    geth_proxy_module = 'proxy'
-    token_module = 'stats'
-    stats_module = 'stats'
+    _account_module = 'account'
+    _contract_module = 'contract'
+    _transaction_module = 'transaction'
+    _block_module = 'block'
+    _event_log_module = 'logs'
+    _geth_proxy_module = 'proxy'
+    _token_module = 'stats'
+    _stats_module = 'stats'
 
     def __init__(self, apikey=settings.ETHERSCAN_API_KEY, timeout=5):
         self.timeout = timeout
@@ -149,7 +150,7 @@ class Client(object):
                 Out[4]: 748997604382925139479303
 
         """
-        module_uri = self._module.format(module=self.account_module)
+        module_uri = self._module.format(module=self._account_module)
         action_uri = self._action.format(action='balance')
         address_uri = self._address.format(address=address)
         tag_uri = self._tag.format(tag='latest')
@@ -208,7 +209,7 @@ class Client(object):
             )
 
         _addresses = ','.join(addresses)
-        module_uri = self._module.format(module=self.account_module)
+        module_uri = self._module.format(module=self._account_module)
         action_uri = self._action.format(action='balancemulti')
         address_uri = self._address.format(address=_addresses)
         tag_uri = self._tag.format(tag='latest')
@@ -284,7 +285,7 @@ class Client(object):
                 ]
 
         """
-        module_uri = self._module.format(module=self.account_module)
+        module_uri = self._module.format(module=self._account_module)
         action = 'txlistinternal' if internal else 'txlist'
         action_uri = self._action.format(action=action)
         address_uri = self._address.format(address=address)
@@ -367,7 +368,7 @@ class Client(object):
                 }
 
         """
-        module_uri = self._module.format(module=self.account_module)
+        module_uri = self._module.format(module=self._account_module)
         action_uri = self._action.format(action='txlistinternal')
         transaction_hash_uri = self._hash.format(hash=transaction_hash)
 
@@ -415,7 +416,7 @@ class Client(object):
                 ]
 
         """
-        module_uri = self._module.format(module=self.account_module)
+        module_uri = self._module.format(module=self._account_module)
         action_uri = self._action.format(action='getminedblocks')
         address_uri = self._address.format(address=address)
         blocktype_uri = self._blocktype.format(blocktype='blocks')
@@ -497,7 +498,7 @@ class Client(object):
                     }
 
         """
-        module_uri = self._module.format(module=self.contract_module)
+        module_uri = self._module.format(module=self._contract_module)
         action_uri = self._action.format(action='getabi')
         address_uri = self._address.format(address=address)
 
@@ -545,7 +546,7 @@ class Client(object):
                 }
 
         """
-        module_uri = self._module.format(module=self.transaction_module)
+        module_uri = self._module.format(module=self._transaction_module)
         action_uri = self._action.format(action='getstatus')
         transaction_hash_uri = self._hash.format(hash=transaction_hash)
 
@@ -559,7 +560,6 @@ class Client(object):
             url=request_url,
             response_object=response.ContractStatusResponse
         )
-
 
     #####################
     # Token API methods #
@@ -589,7 +589,7 @@ class Client(object):
                 Out[4]: 21265524714464.0
 
         """
-        module_uri = self._module.format(module=self.token_module)
+        module_uri = self._module.format(module=self._token_module)
         action_uri = self._action.format(action='tokensupply')
         contract_address_uri = self._contract_address.format(contract_address=address)
 
@@ -635,7 +635,7 @@ class Client(object):
                 Out[4]: 135499.0
 
         """
-        module_uri = self._module.format(module=self.account_module)
+        module_uri = self._module.format(module=self._account_module)
         action_uri = self._action.format(action='tokenbalance')
         contract_address_uri = self._contract_address.format(contract_address=contract_address) # noqa
         address_uri = self._address.format(address=account_address)
@@ -650,4 +650,63 @@ class Client(object):
         return self._get_request(
             url=request_url,
             response_object=response.TokenAccountBalanceResponse
+        )
+
+    #####################
+    # Block API methods #
+    #####################
+    def get_block_and_uncle_rewards_by_block_number(self, block_number):
+        """
+        Retrieves block and uncle rewards by block number.
+
+        :param block_number: The address of the token contract
+        :type block_number: str or int
+        :returns: A :py:obj:`response.TokenAccountBalanceResponse` instance
+
+        Example Usage:
+
+            .. code-block:: python
+
+                In [1]: client = Client()
+
+                In [2]: block_number = 2165403
+
+                In [3]: block_data = client.get_block_and_uncle_rewards_by_block_number(
+                    block_number
+                )
+
+                In [4]: block_data.rewards_data
+                Out[4]: {
+                    "blockNumber": "2165403",
+                    "timeStamp": "1472533979",
+                    "blockMiner": "0x13a06d3dfe21e0db5c016c03ea7d2509f7f8d1e3",
+                    "blockReward": "5314181600000000000",
+                    "uncles": [
+                        {
+                            "miner": "0xbcdfc35b86bedf72f0cda046a3c16829a2ef41d1",
+                            "unclePosition": "0",
+                            "blockreward": "3750000000000000000"
+                        }, {
+                            "miner": "0x0d0c9855c722ff0c78f21e43aa275a5b8ea60dce",
+                            "unclePosition": "1",
+                            "blockreward": "3750000000000000000"
+                        }
+                    ],
+                    "uncleInclusionReward": "312500000000000000"
+                }
+
+        """
+        module_uri = self._module.format(module=self._block_module)
+        action_uri = self._action.format(action='getblockreward')
+        blockno_uri = self._blockno.format(blockno=block_number)
+
+        request_url = self._base_url + \
+            module_uri + \
+            action_uri + \
+            blockno_uri + \
+            self.key_uri
+
+        return self._get_request(
+            url=request_url,
+            response_object=response.BlockRewardsResponse
         )

@@ -45,9 +45,9 @@ class EtherscanResponse(object):
             self.message = self.etherscan_response.get('message')
             self.parse_response()
 
-        if self.status not in [1, "1"]:
+        if self.status not in [1, "1"] and resp.status_code not in [200, 201]:
             raise error.EtherscanRequestError(
-                '{message}\n{result}'.format(
+                '{message}. result={result}'.format(
                     message=self.message,
                     result=self.etherscan_response.get('result')
                 )
@@ -455,3 +455,71 @@ class TokenAccountBalanceResponse(EtherscanResponse):
 
         """
         self.balance = float(self.etherscan_response.get('result'))
+
+
+class BlockRewardsResponse(EtherscanResponse):
+    """
+    Represents a response object for a block / uncle rewards API call to the
+    Etherscan `Blocks` endpoint.
+
+    Available attributes:
+      - `rewards_data`: A dict of the rewards for the block and any uncles mined.
+
+    Example:
+
+        .. code-block:: python
+            In [1]: response = BlockRewardsResponse(resp)
+
+            In [2]: response.rewards_data
+            Out[2]: {
+                "blockNumber": "2165403",
+                "timeStamp": "1472533979",
+                "blockMiner": "0x13a06d3dfe21e0db5c016c03ea7d2509f7f8d1e3",
+                "blockReward": "5314181600000000000",
+                "uncles": [
+                    {
+                        "miner": "0xbcdfc35b86bedf72f0cda046a3c16829a2ef41d1",
+                        "unclePosition": "0",
+                        "blockreward": "3750000000000000000"
+                    }, {
+                        "miner": "0x0d0c9855c722ff0c78f21e43aa275a5b8ea60dce",
+                        "unclePosition": "1",
+                        "blockreward": "3750000000000000000"
+                    }
+                ],
+                "uncleInclusionReward": "312500000000000000"
+            }
+    """
+
+    def parse_response(self):
+        """
+        Parses a token account balance request response. Example API
+        response output:
+
+            .. code-block:: python
+
+                {
+                    "status": "1",
+                    "message": "OK",
+                    "result": {
+                        "blockNumber": "2165403",
+                        "timeStamp": "1472533979",
+                        "blockMiner": "0x13a06d3dfe21e0db5c016c03ea7d2509f7f8d1e3",
+                        "blockReward": "5314181600000000000",
+                        "uncles": [
+                            {
+                                "miner": "0xbcdfc35b86bedf72f0cda046a3c16829a2ef41d1",
+                                "unclePosition": "0",
+                                "blockreward": "3750000000000000000"
+                            }, {
+                                "miner": "0x0d0c9855c722ff0c78f21e43aa275a5b8ea60dce",
+                                "unclePosition": "1",
+                                "blockreward": "3750000000000000000"
+                            }
+                        ],
+                        "uncleInclusionReward": "312500000000000000"
+                    }
+                }
+
+        """
+        self.rewards_data = self.etherscan_response.get('result')
