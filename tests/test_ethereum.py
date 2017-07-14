@@ -29,6 +29,22 @@ class TestAddressObject(BaseEthereumTestCase):
             ethereum.TransactionContainer
         )
 
+    def test_token_balance(self):
+        contract_address = '0x57d90b64a1a57749b0f932f1a3395792e12e7055'
+        _address = '0xe04f27eb70e025b78871a2ad7eabe85e61212761'
+        address = ethereum.Address(address=_address)
+
+        token_balance = address.token_balance(contract_address)
+        self.assertEqual(token_balance, 135499.0)
+
+    def test_blocks_mined(self):
+        _address = '0x9dd134d14d1e65f84b706d6f205cd5b1cd03a46b'
+        address = ethereum.Address(address=_address)
+
+        expected_block_number = 3462296
+        block_number = address.blocks_mined[0].block_number
+        self.assertEqual(expected_block_number, block_number)
+
 
 class TestTransactionObject(BaseEthereumTestCase):
 
@@ -100,6 +116,48 @@ class TestTransactionObject(BaseEthereumTestCase):
             int(self.data.get('timeStamp'))
         )
         self.assertEqual(transaction.datetime_executed, datetime_ex)
+
+    def test_transaction_block(self):
+        transaction = ethereum.Transaction(data=self.data)
+        block = ethereum.Block(80240)
+        expected_miner = block.block_miner
+        expected_reward = block.block_reward
+        expected_datetime_mined = block.datetime_mined
+
+        self.assertEqual(
+            expected_miner.address,
+            transaction.block.block_miner.address
+        )
+        self.assertEqual(
+            expected_reward,
+            transaction.block.block_reward
+        )
+        self.assertEqual(
+            expected_datetime_mined,
+            transaction.block.datetime_mined
+        )
+
+    def test_transaction_type(self):
+        data = {
+            "blockNumber": "2535368",
+            "timeStamp": "1477837690",
+            "hash": "0x8a1a9989bda84f80143181a68bc137ecefa64d0d4ebde45dd9' \
+                '4fc0cf49e70cb6",
+            "from": "0x20d42f2e99a421147acf198d775395cac2e8b03d",
+            "to": "",
+            "value": "0",
+            "contractAddress": "0x2c1ba59d6f58433fb1eaee7d20b26ed83bda51a3",
+            "input": "",
+            "type": "create",
+            "gas": "254791",
+            "gasUsed": "46750",
+            "traceId": "0",
+            "isError": "0",
+            "errCode": ""
+        }
+
+        transaction = ethereum.Transaction(data=data)
+        self.assertEqual(transaction.type, 'create')
 
 
 class TestTransactionContainer(BaseEthereumTestCase):
@@ -233,7 +291,7 @@ class TestBlockContainer(BaseEthereumTestCase):
     def test_retrieval(self):
         data_list = [self.data for _ in range(5)]
 
-        container = ethereum.TransactionContainer(data_list)
+        container = ethereum.BlockContainer(data_list)
         expected_block_number = int(ethereum.Block(
             self.data.get('blockNumber')
         ).block_number)
