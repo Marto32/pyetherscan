@@ -248,3 +248,36 @@ class TestBlockContainer(BaseEthereumTestCase):
                 block.block_number,
                 expected_block_number
             )
+
+
+class TestTokenObject(BaseEthereumTestCase):
+
+    def test_initialization(self):
+        with self.assertRaises(error.EtherscanInitializationError):
+            _bad_address = 5
+            ethereum.Token(_bad_address)
+
+    def test_token_balance(self):
+        expected = {
+            "status": "1",
+            "message": "OK",
+            "result": "135499"
+        }
+
+        _contract_address = '0x57d90b64a1a57749b0f932f1a3395792e12e7055'
+        _address = '0xe04f27eb70e025b78871a2ad7eabe85e61212761'
+        token = ethereum.Token(contract_address=_contract_address)
+
+        self.assertEqual(
+            token.token_balance(_address),
+            float(expected.get('result'))
+        )
+
+    def test_token_supply(self):
+        expected = 21265524714464.0
+        _contract_address = '0x57d90b64a1a57749b0f932f1a3395792e12e7055'
+        token = ethereum.Token(contract_address=_contract_address)
+        self.assertEqual(
+            token.supply,
+            expected
+        )
