@@ -140,3 +140,88 @@ class TestTransactionContainer(BaseEthereumTestCase):
                 txn.hash,
                 ethereum.Transaction(self.data).hash
             )
+
+
+class TestBlockObject(BaseEthereumTestCase):
+
+    data = {
+        "blockNumber": "2165403",
+        "timeStamp": "1472533979",
+        "blockMiner": "0x13a06d3dfe21e0db5c016c03ea7d2509f7f8d1e3",
+        "blockReward": "5314181600000000000",
+        "uncles": [
+            {
+                "miner": "0xbcdfc35b86bedf72f0cda046a3c16829a2ef41d1",
+                "unclePosition": "0",
+                "blockreward": "3750000000000000000"
+            }, {
+                "miner": "0x0d0c9855c722ff0c78f21e43aa275a5b8ea60dce",
+                "unclePosition": "1",
+                "blockreward": "3750000000000000000"
+            }
+        ],
+        "uncleInclusionReward": "312500000000000000"
+    }
+
+    uncles = [
+        {
+            "miner": ethereum.Address(
+                "0xbcdfc35b86bedf72f0cda046a3c16829a2ef41d1"),
+            "block_reward": float("3750000000000000000")
+        }, {
+            "miner": ethereum.Address(
+                "0x0d0c9855c722ff0c78f21e43aa275a5b8ea60dce"),
+            "block_reward": float("3750000000000000000")
+        }
+    ]
+
+    def test_initialization(self):
+        with self.assertRaises(error.EtherscanInitializationError):
+            ethereum.Block(2.0)
+
+    def test_block_attributes(self):
+
+        block_rewards = ethereum.Block(2165403)
+
+        self.assertEqual(block_rewards.time_stamp, self.data.get(
+            'timeStamp'))
+        self.assertEqual(block_rewards.block_miner, self.data.get(
+            'blockMiner'))
+        self.assertEqual(block_rewards.block_reward, self.data.get(
+            'blockReward'))
+        self.assertEqual(block_rewards.uncle_inclusion_reward, self.data.get(
+            'uncleInclusionReward'))
+        self.assertEqual(block_rewards.uncles, self.uncles)
+
+        datetime_mined = datetime.datetime.utcfromtimestamp(
+            int(self.data.get('timeStamp'))
+        )
+        self.assertEqual(block_rewards.datetime_mined, datetime_mined)
+
+
+class TestBlockContainer(BaseEthereumTestCase):
+
+    data = {
+        "blockNumber": "2691400",
+        "timeStamp": "1480072029",
+        "blockReward": "5086562212310617100"
+    }
+
+    def test_retrieval(self):
+        data_list = [self.data for _ in range(5)]
+
+        container = ethereum.TransactionContainer(data_list)
+        expected_block_number = ethereum.Block(
+            self.data.get('blockNumber')
+        ).block_number
+
+        self.assertEqual(
+            container[0].block_number,
+            expected_block_number
+        )
+
+        for block in container:
+            self.assertEqual(
+                block.block_number,
+                expected_block_number
+            )
