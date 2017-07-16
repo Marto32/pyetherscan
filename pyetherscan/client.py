@@ -7,12 +7,27 @@ from retrying import retry
 from . import error, response, settings
 
 
+def check_exception_for_retry(exception):
+    """
+    Prevent retrying if an etherscan response status is not 1.
+    """
+    return not isinstance(exception, error.EtherscanDataError)
+
+
+RETRY_KWARGS = {
+    'wait_exponential_multiplier': 1000,
+    'wait_exponential_max': 10000,
+    'stop_max_attempt_number': 5,
+    'retry_on_exception': check_exception_for_retry,
+}
+
+
 class Client(object):
     """
     Represents an Etherscan API client.
 
-    Initialized using the API_KEY environment variable (or you may pass the API
-    key as an argument).
+    Initialized using the ETHERSCAN_API_KEY environment variable (or you may
+    pass the API key as an argument).
 
     You can use this object to query the Etherscan database for raw data for
     each endpoint (see Public Methods below). An example is shown in the
@@ -53,6 +68,7 @@ class Client(object):
 
     # Define etherscan API url parameters
     _base_url = 'https://api.etherscan.io/'
+    _test_url = 'https://ropsten.etherscan.io/'
     _module = 'api?module={module}'
     _action = '&action={action}'
     _tag = '&tag={tag}'
@@ -87,6 +103,10 @@ class Client(object):
                 'You must supply an API key.'
             )
 
+        # If no key is supplied, use the test network
+        if self.apikey == settings.TESTING_API_KEY:
+            self._base_url = self._test_url
+
         if not isinstance(self.timeout, (float, int)):
             raise error.EtherscanInitializationError(
                 'Timeout seconds must be an integer or decimal.'
@@ -107,7 +127,7 @@ class Client(object):
             _timeout=self.timeout
         )
 
-    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000, stop_max_attempt_number=5)  # noqa
+    @retry(**RETRY_KWARGS)
     def _get_request(self, url, response_object):
         """
         Makes a standardized GET request.
@@ -116,7 +136,7 @@ class Client(object):
         resp = requests.get(**payload)
         return response_object(resp)
 
-    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000, stop_max_attempt_number=5)  # noqa
+    @retry(**RETRY_KWARGS)
     def _post_request(self, url, response_object):
         """
         Makes a standardized POST request.

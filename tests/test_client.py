@@ -31,17 +31,19 @@ class TestInitialization(BaseClientTestCase):
 class TestAccountEndpoint(BaseClientTestCase):
 
     def test_get_single_balance(self):
+        expected_bal = 7.459976043829251e+23
+
         expected_response = {
             u'status': u'1',
             u'message': u'OK',
-            u'result': u'747997604382925139479303'
+            u'result': u'745997604382925139479303'
         }
         address = '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'
         result = self.client.get_single_balance(address)
 
         self.assertEqual(response.SingleAddressBalanceResponse, type(result))
         self.assertEqual(expected_response, result.etherscan_response)
-        self.assertEqual(747997604382925139479303.0, result.balance)
+        self.assertEqual(expected_bal, result.balance)
         self.base_etherscan_response_status(result)
 
     def test_get_multi_balance(self):

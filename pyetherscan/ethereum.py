@@ -261,7 +261,7 @@ class Address(object):
         - ``blocks_mined``
 
     Public Methods:
-        - :py:method:`token_balance`
+        - :py:meth:`token_balance`
 
     Example Usage:
 
@@ -296,7 +296,7 @@ class Address(object):
 
     def token_balance(self, contract_address):
         """
-        Obtains the address's ERC-20 compliant token balance given a token
+        Obtains an address's ERC-20 compliant token balance given a token
         contract address.
 
         :param contract_address: The address of the token contract.
@@ -453,8 +453,7 @@ class Block(object):
         return self._time_stamp or self._retrieve_time_stamp()
 
     def _retrieve_block_miner(self):
-        miner = str(self._raw_block_data.get('blockMiner'))
-        self._block_miner = Address(miner)
+        self._block_miner = str(self._raw_block_data.get('blockMiner'))
         return self._block_miner
 
     @property
@@ -483,7 +482,7 @@ class Block(object):
         uncles = self._raw_block_data.get('uncles')
         parsed_uncles = [
             {
-                'miner': Address(str(u['miner'])),
+                'miner': str(u['miner']),
                 'block_reward': float(u['blockreward'])
             } for u in uncles
         ]

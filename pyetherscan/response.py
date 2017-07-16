@@ -45,8 +45,13 @@ class EtherscanResponse(object):
             self.message = self.etherscan_response.get('message')
             self.parse_response()
 
-        if self.status not in [1, "1"] and resp.status_code not in [200, 201]:
+        if resp.status_code not in [200, 201]:
             raise error.EtherscanRequestError(
+                'reason: {reason}'.format(reason=resp.reason)
+            )
+
+        if self.status not in [1, '1']:
+            raise error.EtherscanDataError(
                 '{message}. result={result}'.format(
                     message=self.message,
                     result=self.etherscan_response.get('result')
