@@ -21,7 +21,8 @@ make note of your API key. Then install the library by running:
     pip install pyetherscan
 
 When using the library, you must set the ``ETHERSCAN_API_KEY``
-environment variable.
+environment variable. If you do not set this environment variable, the package
+will default to the ropsten test chain Etherscan API.
 
 Usage
 =====
