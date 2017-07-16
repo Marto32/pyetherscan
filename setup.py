@@ -16,7 +16,7 @@ else:
 setup(
     name='pyetherscan',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    version='0.0.0',
+    version='0.0.1',
     description='An unofficial wrapper for the Etherscan.io API',
     long_description=long_description,
     author='Michael Martorella',
