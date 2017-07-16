@@ -25,6 +25,10 @@ setup(
     download_url='https://github.com/Marto32/pyetherscan/archive/0.0.1.tar.gz',
     keywords=['ethereum', 'blockchain', 'etherscan'],
     license='MIT License',
+    install_requires=[
+        'requests',
+        'retrying',
+    ]
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',

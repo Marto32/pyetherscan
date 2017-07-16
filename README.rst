@@ -4,6 +4,9 @@
 .. image:: https://coveralls.io/repos/github/Marto32/pyetherscan/badge.svg?branch=master
     :target: https://coveralls.io/github/Marto32/pyetherscan?branch=master
 
+.. image:: https://pypip.in/py_versions/pyetherscan/badge.svg
+    :target: https://pypip.in/py_versions/pyetherscan/
+
 
 pyetherscan
 ===========
