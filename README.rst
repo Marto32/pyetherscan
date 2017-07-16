@@ -4,7 +4,7 @@
 .. image:: https://coveralls.io/repos/github/Marto32/pyetherscan/badge.svg?branch=master
     :target: https://coveralls.io/github/Marto32/pyetherscan?branch=master
 
-.. image:: https://img.shields.io/pypi/pyversions/Django.svg   :target:
+.. image:: https://img.shields.io/pypi/pyversions/pyetherscan.svg
     :target: https://pypi.python.org/pypi/pyetherscan
 
 
