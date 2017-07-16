@@ -10,6 +10,13 @@ class EtherscanBaseError(Exception):
     pass
 
 
+class EtherscanDataError(EtherscanBaseError):
+    """
+    An abstract error class for data related errors (e.g. if result is []).
+    """
+    pass
+
+
 class EtherscanInitializationError(EtherscanBaseError):
     """
     An abstract error class for Initialization related errors.
