@@ -7,6 +7,9 @@
 .. image:: https://img.shields.io/pypi/pyversions/pyetherscan.svg
     :target: https://pypi.python.org/pypi/pyetherscan
 
+.. image:: https://img.shields.io/pypi/v/pyetherscan.svg
+    :target: https://pypi.python.org/pypi/pyetherscan
+
 
 pyetherscan
 ===========
@@ -23,9 +26,19 @@ make note of your API key. Then install the library by running:
 
     pip install pyetherscan
 
-When using the library, you must set the ``ETHERSCAN_API_KEY``
-environment variable. If you do not set this environment variable, the package
-will default to the ropsten test chain Etherscan API.
+After installation, there are two main ways to set your API key. The first
+is by creating a configuration file named ``.pyetherscan.ini`` and
+saving it in your home directory. The format for this file is as follows:
+
+.. code-block:: none
+
+    [Credentials]
+    ETHERSCAN_API_KEY: YourApiKeyToken
+
+The second is by setting the environment variable ``ETHERSCAN_API_KEY``.
+
+If you do not use either option, the package will connect to the ropsten test
+chain via the Etherscan API by default.
 
 Usage
 =====
