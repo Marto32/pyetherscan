@@ -74,3 +74,8 @@ For example:
 Contributing
 ============
 Fork this repository, create a branch and issue a PR.
+
+
+.. image:: https://badges.gitter.im/pyetherscan/Lobby.svg
+   :alt: Join the chat at https://gitter.im/pyetherscan/Lobby
+   :target: https://gitter.im/pyetherscan/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
