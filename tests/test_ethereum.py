@@ -15,7 +15,7 @@ class TestAddressObject(BaseEthereumTestCase):
     def test_retrieve_balance(self):
         _address = '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'
         address = ethereum.Address(address=_address)
-        self.assertEqual(address.balance, 7.459976043829251e+23)
+        self.assertEqual(address.balance, 745997704382925139479303.0)
 
         with self.assertRaises(error.EtherscanInitializationError):
             _bad_address = 5

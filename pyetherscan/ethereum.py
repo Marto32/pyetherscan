@@ -232,6 +232,9 @@ class TransactionContainer(object):
     """
 
     def __init__(self, transaction_list):
+        if not isinstance(transaction_list, list):
+            raise TypeError('transaction_list must be of type list, '
+                            'not {type}'.format(type=type(transaction_list)))
         self.transaction_list = transaction_list
 
     def __iter__(self):
@@ -322,7 +325,9 @@ class Address(object):
             address=self.address,
             internal=True
         )
-        self._transactions = normal.transactions + internal.transactions
+        txns = normal.transactions + internal.transactions
+        self._transactions = txns or []
+        return self._transactions
 
     @property
     def _raw_transactions(self):
@@ -346,7 +351,7 @@ class Address(object):
 
     def _retrieve_block_list(self):
         response = self.client.get_blocks_mined_by_address(self.address)
-        self._block_list = response.blocks
+        self._block_list = response.blocks or []
         return self._block_list
 
     @property

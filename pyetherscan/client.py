@@ -11,7 +11,9 @@ def check_exception_for_retry(exception):
     """
     Prevent retrying if an etherscan response status is not 1.
     """
-    return not isinstance(exception, error.EtherscanDataError)
+    data_error = isinstance(exception, error.EtherscanDataError)
+    request_error = isinstance(exception, error.EtherscanRequestError)
+    return not data_error and not request_error
 
 
 RETRY_KWARGS = {

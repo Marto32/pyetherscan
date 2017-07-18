@@ -7,6 +7,13 @@ import json
 
 from . import error
 
+try:
+    from json.decoder import JSONDecodeError
+except (AttributeError, ImportError):
+    # In python 2.x there is no JSONDecodeError, the json module
+    # simply throws a ValueError
+    JSONDecodeError = ValueError
+
 
 class EtherscanResponse(object):
     """
@@ -25,38 +32,47 @@ class EtherscanResponse(object):
     """
 
     def __init__(self, resp):
+
+        # Check for rate limit errors
         if resp.status_code == 403:
             raise error.EtherscanRequestError(
                 'Rate limit reached.'
             )
 
+        # Ensure a valid response code was received
+        if resp.status_code not in [200, 201]:
+            raise error.EtherscanRequestError(
+                'reason: {reason}'.format(reason=resp.reason)
+            )
+
+        # Attempt to parse response body
         try:
             self.etherscan_response = json.loads(resp.text)
-        except AttributeError:
+        except (AttributeError, JSONDecodeError):
             raise error.EtherscanRequestError(
                 'Invalid request: \n{request}'.format(
                     request=resp
                 )
             )
         else:
-            self.response_object = resp
-            self.response_status_code = self.response_object.status_code
-            self.status = self.etherscan_response.get('status')
             self.message = self.etherscan_response.get('message')
-            self.parse_response()
+            self.status = self.etherscan_response.get('status')
 
-        if resp.status_code not in [200, 201]:
-            raise error.EtherscanRequestError(
-                'reason: {reason}'.format(reason=resp.reason)
-            )
-
-        if self.status not in [1, '1']:
+        # Parse API message to check for API errors
+        result = self.etherscan_response.get('result')
+        bad_data = self.message == 'NOTOK' or result == 'Error!'
+        if bad_data:
             raise error.EtherscanDataError(
                 '{message}. result={result}'.format(
                     message=self.message,
-                    result=self.etherscan_response.get('result')
+                    result=result
                 )
             )
+
+        # Finish parsing response object
+        self.response_object = resp
+        self.response_status_code = resp.status_code
+        self.parse_response()
 
     def parse_response(self):
         """
