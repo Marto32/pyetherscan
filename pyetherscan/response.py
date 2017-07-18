@@ -50,11 +50,13 @@ class EtherscanResponse(object):
                 'reason: {reason}'.format(reason=resp.reason)
             )
 
-        if self.status not in [1, '1']:
+        result = self.etherscan_response.get('result')
+        bad_data = self.message == 'NOTOK' or result == 'Error!'
+        if bad_data:
             raise error.EtherscanDataError(
                 '{message}. result={result}'.format(
                     message=self.message,
-                    result=self.etherscan_response.get('result')
+                    result=result
                 )
             )
 
