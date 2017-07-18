@@ -4,6 +4,10 @@ A module used to define API-specific response objects. All Etherscan API request
 See :doc:`/response` for an overview.
 """
 import json
+try:
+    from json.decoder import JSONDecodeError
+except AttributeError:
+    from json import JSONDecodeError
 
 from . import error
 
@@ -41,7 +45,7 @@ class EtherscanResponse(object):
         # Attempt to parse response body
         try:
             self.etherscan_response = json.loads(resp.text)
-        except (AttributeError, json.decoder.JSONDecodeError):
+        except (AttributeError, JSONDecodeError):
             raise error.EtherscanRequestError(
                 'Invalid request: \n{request}'.format(
                     request=resp
