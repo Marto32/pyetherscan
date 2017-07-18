@@ -4,12 +4,15 @@ A module used to define API-specific response objects. All Etherscan API request
 See :doc:`/response` for an overview.
 """
 import json
-try:
-    from json.decoder import JSONDecodeError
-except AttributeError:
-    from json import JSONDecodeError
 
 from . import error
+
+try:
+    from json.decoder import JSONDecodeError
+except (AttributeError, ImportError):
+    # In python 2.x there is no JSONDecodeError, the json module
+    # simply throws a ValueError
+    JSONDecodeError = ValueError
 
 
 class EtherscanResponse(object):
