@@ -6,7 +6,11 @@ PATH = os.path.join(HOME_DIR, CONFIG_FILE)
 TESTING_API_KEY = 'YourApiKeyToken'
 
 if os.path.isfile(PATH):
-    from configparser import ConfigParser
+    try:
+        from configparser import ConfigParser
+    except ImportError:
+        # Handle python 2.7 code
+        import ConfigParser
     config = ConfigParser()
     config.read(PATH)
     ETHERSCAN_API_KEY = config['Credentials']['ETHERSCAN_API_KEY']
