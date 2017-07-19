@@ -16,18 +16,19 @@ else:
 setup(
     name='pyetherscan',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    version='0.1.0',
+    version='0.1.1',
     description='An unofficial wrapper for the Etherscan.io API',
     long_description=long_description,
     author='Michael Martorella',
     author_email='michaelmartorella@gmail.com',
     url='https://github.com/Marto32/pyetherscan',
-    download_url='https://github.com/Marto32/pyetherscan/archive/0.1.0.tar.gz',
+    download_url='https://github.com/Marto32/pyetherscan/archive/0.1.1.tar.gz',
     keywords=['ethereum', 'blockchain', 'etherscan'],
     license='MIT License',
     install_requires=[
         'requests',
         'retrying',
+        'configparser',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

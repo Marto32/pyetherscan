@@ -2,6 +2,7 @@
 Library for connecting to the Etherscan API using a self contained client.
 """
 import requests
+import sys
 
 from retrying import retry
 from . import error, response, settings
@@ -100,7 +101,11 @@ class Client(object):
         self.timeout = timeout
         self.apikey = apikey
 
-        if not isinstance(self.apikey, str):
+        if sys.version_info[0] < 3:
+            accepted_types = (str, unicode)
+        else:
+            accepted_types = str
+        if not isinstance(self.apikey, accepted_types):
             raise error.EtherscanInitializationError(
                 'You must supply an API key.'
             )
