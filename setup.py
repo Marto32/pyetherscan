@@ -28,7 +28,6 @@ setup(
     install_requires=[
         'requests',
         'retrying',
-        'configparser',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
