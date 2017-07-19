@@ -31,12 +31,12 @@ class TestInitialization(BaseClientTestCase):
 class TestAccountEndpoint(BaseClientTestCase):
 
     def test_get_single_balance(self):
-        expected_bal = 745997704382925139479303.0
+        expected_bal = 744997704382925139479303.0
 
         expected_response = {
             u'status': u'1',
             u'message': u'OK',
-            u'result': u'745997704382925139479303'
+            u'result': u'744997704382925139479303'
         }
         address = '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'
         result = self.client.get_single_balance(address)
